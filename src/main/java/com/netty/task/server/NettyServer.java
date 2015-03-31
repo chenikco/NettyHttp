@@ -7,7 +7,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
-import java.net.InetSocketAddress;
 
 
 /**
@@ -39,9 +38,7 @@ public class NettyServer  {
                     //Specify the use of an NIO transport Channel
                     .channel(NioServerSocketChannel.class)
                     //Set the socket address using the selected port
-                    .localAddress(new InetSocketAddress(port))
-
-                    .childHandler(new NettyServerInitializer() );
+                   .childHandler(new NettyServerInitializer() );
             //Bind the server; sync waits for the server to close
             Channel ch = b.bind(port).sync().channel();
             //Close the channel and block until it is closed

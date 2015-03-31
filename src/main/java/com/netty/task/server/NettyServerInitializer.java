@@ -1,17 +1,16 @@
 package com.netty.task.server;
 
 
-import com.netty.task.server.handlers.HttpRequestHandler;
-import com.netty.task.server.handlers.NettyHelloHandler;
+
 import com.netty.task.server.handlers.NettyServerHandler;
+import com.netty.task.server.handlers.NettyTrafficStatistics;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
-import io.netty.handler.codec.http.HttpServerCodec;
-import io.netty.handler.ssl.SslContext;
 import io.netty.handler.traffic.AbstractTrafficShapingHandler;
+
 
 
 /**
@@ -28,12 +27,11 @@ public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     public void initChannel(SocketChannel ch) {
         ChannelPipeline p = ch.pipeline();
-
+        p.addLast(new NettyTrafficStatistics(AbstractTrafficShapingHandler.DEFAULT_CHECK_INTERVAL));
         p.addLast(new HttpRequestDecoder());
         p.addLast(new HttpResponseEncoder());
-        p.addLast(new NettyHelloHandler());
         p.addLast(new NettyServerHandler());
-        p.addLast(new HttpRequestHandler());
+
     }
 }
 
