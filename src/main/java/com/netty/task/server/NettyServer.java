@@ -18,11 +18,11 @@ public class NettyServer  {
         this.port = port;
     }
     public static void main(String[] args) throws Exception {
-        if (args.length != 1) {
-            System.err.println("Usage: " + NettyServer.class.getSimpleName() +" <port>");
+        int port = 121;
+        if (args.length > 0) {
+            //Set the port value (throws a NumberFormatException if the port argument is malformed)
+            port = Integer.parseInt(args[0]);
         }
-        //Set the port value (throws a NumberFormatException if the port argument is malformed)
-        int port = Integer.parseInt(args[0]);
         //Call the server's start() method.
         new NettyServer(port).start();
     }
