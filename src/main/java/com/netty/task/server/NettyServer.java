@@ -28,7 +28,7 @@ public class NettyServer  {
     }
     public void start() throws Exception {
         //Create the EventLoopGroup
-//TODO Create description for  EventLoopGroup
+
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {

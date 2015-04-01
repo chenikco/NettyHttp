@@ -27,7 +27,7 @@ public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     public void initChannel(SocketChannel ch) {
         ChannelPipeline p = ch.pipeline();
-        p.addLast(new NettyTrafficStatistics(AbstractTrafficShapingHandler.DEFAULT_CHECK_INTERVAL));
+        p.addLast(new NettyTrafficStatistics(0));
         p.addLast(new HttpRequestDecoder());
         p.addLast(new HttpResponseEncoder());
         p.addLast(new NettyServerHandler());

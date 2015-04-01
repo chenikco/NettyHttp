@@ -10,9 +10,6 @@ public class NettyConnectionLog {
     private String srcIp;
     private String URI;
     private Timestamp startTime;
-
-
-
     private Timestamp endTime;
     private long sentBytes;
     private long receivedBytes;

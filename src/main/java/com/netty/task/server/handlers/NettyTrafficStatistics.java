@@ -34,74 +34,7 @@ public class NettyTrafficStatistics extends ChannelTrafficShapingHandler {
 
     }
 
-//    @Override
-//    public void channelRead( ChannelHandlerContext ctx, Object msg) throws Exception{
-//
-////TODO Try to do different handlers for Uri
-//        if (msg instanceof HttpRequest) {
-//            HttpRequest req =(HttpRequest) msg;
-//            nettyConnectionLog.setURI(req.getUri().trim());
-//
-//
-//        }
-//        super.channelRead(ctx, msg);
-//    }
 
-//    @Override
-//    public void channelRead(ChannelHandlerContext ctx, Object msg)
-//            throws Exception {
-//
-//        if (msg instanceof HttpRequest) {
-//            HttpRequest req = (HttpRequest) msg;
-//
-//            String requestUrl = req.getUri().trim();
-//            nettyConnectionLog.setURI(requestUrl);
-//        }
-//  //      UnpooledHeapByteBuf byteMsg = (UnpooledHeapByteBuf) msg;
-//      //  nettyConnectionLog.setReceivedBytes((nettyConnectionLog.getReceivedBytes()+ byteMsg.readableBytes()));
-//
-//       // super.channelRead(ctx, msg);
-//
-//    }
-
-//    @Override
-//    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-//
-//        ctx.flush();
-//        super.channelReadComplete(ctx);
-//       /* Writing response to request is over. Record request in statistics */
-//      //  nettyStatistics.addIpRequests(NettyStatistics.getIpFromChannel(ctx.channel()));
-////        if (req != null) {
-////            nettyConnectionLog.setURI(req.getUri());
-////        }
-//    }
-//
-//    @Override
-//    public void write(ChannelHandlerContext ctx, Object msg,
-//                      ChannelPromise promise) throws Exception {
-//        ByteBuf byteMsg = (ByteBuf) msg;
-//        nettyConnectionLog.setSentBytes((nettyConnectionLog.getSentBytes() + byteMsg.readableBytes()));
-//
-//        super.write(ctx, msg, promise);
-//    }
-
-//    @Override
-//    public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-//     //   nettyConnectionLog.setSrcIp(((InetSocketAddress) ctx.channel().remoteAddress()).getHostString());
-//        nettyConnectionLog.setStartTime(new Timestamp(new Date().getTime()));
-//        super.channelRegistered(ctx);
-//    }
-
-//    @Override
-//    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
-//        nettyConnectionLog.setSrcIp(((InetSocketAddress) ctx.channel().remoteAddress()).getAddress().getHostAddress());
-//        nettyConnectionLog.setEndTime(new Timestamp(new Date().getTime()));
-//    //    this.request.setWhen(new Date());
-//      //  this.request.setTimestamp(System.currentTimeMillis() - this.startTime);
-//        nettyConnectionLog.setURI(NettyStatistics.netty_statistics.getUri());
-//
-//        super.channelUnregistered(ctx);
-//    }
 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
@@ -121,15 +54,25 @@ public class NettyTrafficStatistics extends ChannelTrafficShapingHandler {
         nettyConnectionLog.setEndTime(new Timestamp(new Date().getTime()));
         nettyConnectionLog.setReceivedBytes( this.trafficCounter().cumulativeReadBytes());
         nettyConnectionLog.setSentBytes( this.trafficCounter().cumulativeWrittenBytes());
-     //   TimeUnit.SECONDS.convert(nettyConnectionLog.getEndTime()-nettyConnectionLog.getStartTime(), TimeUnit.NANOSECONDS);
+
 
         if (nettyConnectionLog.getStartTime().getTime()>0){
-      //      double timing = nettyConnectionLog.getEndTime().getTime()-nettyConnectionLog.getStartTime().getTime() ;
-      //      double seconds = timing /1000;
-       //     double speed =  (Math.round((((int)nettyConnectionLog.getReceivedBytes() + (int)nettyConnectionLog.getSentBytes()) / seconds) * 1000.0) / 1000.0);
-            double speedNew = this.trafficCounter.lastWrittenBytes() * 1000 / (this.trafficCounter.checkInterval());
+            try {
+                double timing = nettyConnectionLog.getEndTime().getTime()-nettyConnectionLog.getStartTime().getTime() ;
+                double seconds = timing /1000;
+                double speed =  (Math.round((((int)nettyConnectionLog.getReceivedBytes() + (int)nettyConnectionLog.getSentBytes()) / seconds) * 1000.0) / 1000.0);
+                nettyConnectionLog.setSpeed( speed);
 
-            nettyConnectionLog.setSpeed( speedNew);
+                //   double speedNew = this.trafficCounter.lastWrittenBytes() * 1000 / (this.trafficCounter.checkInterval());
+            }
+            catch ( ArithmeticException ae){
+                System.out.println( " ArithmeticException " + ae.getMessage());
+                System.out.println( "Setting speed to 0 ");
+                nettyConnectionLog.setSpeed( 0);
+            }
+
+
+
 
         }
         addNettyConnectionLogInStatistics(nettyConnectionLog);

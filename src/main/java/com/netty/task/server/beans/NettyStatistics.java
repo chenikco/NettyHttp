@@ -19,11 +19,14 @@ public class NettyStatistics  {
 
     public static  NettyStatistics netty_statistics ;
 
+    private String uri;
 
-    //TODO Difference between GlobalEventExecutor and ImmediateEventExecutor ????
     private static DefaultChannelGroup allChannels  = new DefaultChannelGroup(ImmediateEventExecutor.INSTANCE);
+
     private ConcurrentHashMap<String,Integer> redirectsCount = new ConcurrentHashMap<>();
+
     private ConcurrentHashMap<String,Pair<Integer,Timestamp>>  iprequests = new ConcurrentHashMap<>();
+
     private List<NettyConnectionLog> connectionLogs = Collections.synchronizedList(new ArrayList<NettyConnectionLog>());
 
     public String getUri() {
@@ -33,10 +36,6 @@ public class NettyStatistics  {
     public void setUri(String uri) {
         this.uri = uri;
     }
-
-    private String uri;
-
-
 
     private NettyStatistics() {
 
